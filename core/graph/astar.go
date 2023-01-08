@@ -19,12 +19,12 @@ type AStarSearch interface {
 }
 
 // NewAStarSearch returns a new a-star search instance.
-func NewAStarSearch() AStarSearch {
+func NewAStarSearch(heuristic func(node, goal *Node) float64) AStarSearch {
 	plugin.Connect(con, &newAStarSearch)
-	return newAStarSearch()
+	return newAStarSearch(heuristic)
 }
 
 var (
 	con            = plugin.NewConnection()
-	newAStarSearch func() AStarSearch
+	newAStarSearch func(heuristic func(node, goal *Node) float64) AStarSearch
 )
