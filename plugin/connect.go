@@ -9,9 +9,11 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+
+	api "github.com/merschformann/flow-experiment-api"
 )
 
-const pluginFile = "plugin.so"
+const pluginFileTemplate = "plugin-%s.so"
 
 // Connection is a connection to a plugin.
 type Connection struct {
@@ -54,6 +56,7 @@ func Connect[T any](c *Connection, target *T) {
 }
 
 func ConnectSymbol[T any](name string, target *T) {
+	pluginFile := fmt.Sprintf(pluginFileTemplate, api.Version)
 	if _, err := os.Stat(pluginFile); errors.Is(err, os.ErrNotExist) {
 		fmt.Fprintf(os.Stderr, "could not find plugin %q\n", pluginFile)
 		os.Exit(1)
