@@ -3,6 +3,7 @@ package plugin
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"plugin"
 	"reflect"
@@ -12,8 +13,6 @@ import (
 
 	api "github.com/merschformann/flow-experiment-api"
 )
-
-const pluginFileTemplate = "plugin-%s.so"
 
 // Connection is a connection to a plugin.
 type Connection struct {
@@ -55,15 +54,32 @@ func Connect[T any](c *Connection, target *T) {
 	c.cache[target] = true
 }
 
+const pluginFileTemplate = "plugin-%s%s.so"
+
 func ConnectSymbol[T any](name string, target *T) {
-	pluginFile := fmt.Sprintf(pluginFileTemplate, api.Version)
+	// TODO remove debug code
+	// Show files in current directory
+	files, err := ioutil.ReadDir(".")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error reading directory: %v", err)
+		os.Exit(1)
+	}
+	for _, f := range files {
+		fmt.Println(f.Name())
+	}
+
+	pluginFile := fmt.Sprintf(pluginFileTemplate, api.Version, debug)
+
+	// TODO remove debug
+	fmt.Println("plugin file:", pluginFile)
+
 	if _, err := os.Stat(pluginFile); errors.Is(err, os.ErrNotExist) {
 		fmt.Fprintf(os.Stderr, "could not find plugin %q\n", pluginFile)
 		os.Exit(1)
 	}
 	p, err := plugin.Open(pluginFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error opening plugin %q\n", pluginFile)
+		fmt.Fprintf(os.Stderr, "error opening plugin %q: %v", pluginFile, err)
 		os.Exit(1)
 	}
 	sym, err := p.Lookup(name)
