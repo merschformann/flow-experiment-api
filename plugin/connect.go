@@ -3,7 +3,6 @@ package plugin
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"plugin"
 	"reflect"
@@ -57,36 +56,29 @@ func Connect[T any](c *Connection, target *T) {
 const pluginFileTemplate = "plugin-%s%s.so"
 
 func ConnectSymbol[T any](name string, target *T) {
-	// TODO remove debug code
-	// Show files in current directory
-	files, err := ioutil.ReadDir(".")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error reading directory: %v", err)
-		os.Exit(1)
-	}
-	for _, f := range files {
-		fmt.Println(f.Name())
-	}
-
+	// Assemble plugin file name
 	pluginFile := fmt.Sprintf(pluginFileTemplate, api.Version, debug)
 
-	// TODO remove debug
-	fmt.Println("plugin file:", pluginFile)
-
+	// Check if plugin exists
 	if _, err := os.Stat(pluginFile); errors.Is(err, os.ErrNotExist) {
 		fmt.Fprintf(os.Stderr, "could not find plugin %q\n", pluginFile)
 		os.Exit(1)
 	}
+
+	// Load plugin
 	p, err := plugin.Open(pluginFile)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error opening plugin %q: %v", pluginFile, err)
 		os.Exit(1)
 	}
+
+	// Connect symbol
 	sym, err := p.Lookup(name)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error connecting symbol %q\n", name)
 		os.Exit(1)
 	}
+
 	// Names in the plugin are associated with pointers to functions.
 	// Thus we cannot: *target = sym(T)
 	*target = reflect.ValueOf(sym). // *func(...) as reflect.Value
