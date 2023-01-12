@@ -1,0 +1,21 @@
+name: release
+on:
+  workflow_dispatch:
+    inputs:
+      VERSION:
+        description: 'Version'
+        required: true
+        type: string
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-20.04
+    steps:
+      # Release the version
+      - name: Release
+        run: |
+          echo "Received workflow_dispatch event with version ${{ github.event.inputs.VERSION }}"
+          echo "Releasing version ${{ github.event.inputs.VERSION }}"
+          gh release create ${{ github.event.inputs.VERSION }} --verify-tag -t ${{ github.event.inputs.VERSION }} -n ${{ github.event.inputs.VERSION }}
