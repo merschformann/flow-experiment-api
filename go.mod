@@ -8,3 +8,6 @@ retract v0.0.28 // Retraction release
 
 retract v0.0.31 // Corrupted release
 retract v0.0.32 // Retraction release
+
+retract v0.0.36 // Corrupted release
+retract v0.0.37 // Retraction release
