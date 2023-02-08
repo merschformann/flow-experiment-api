@@ -1,3 +1,3 @@
 package root
 
-const Version = "v0.0.38"
+const Version = "v0.0.39"
