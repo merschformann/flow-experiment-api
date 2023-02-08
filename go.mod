@@ -11,3 +11,6 @@ retract v0.0.32 // Retraction release
 
 retract v0.0.36 // Corrupted release
 retract v0.0.37 // Retraction release
+
+retract v0.0.38 // Corrupted release
+retract v0.0.39 // Retraction release
