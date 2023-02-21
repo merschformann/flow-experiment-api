@@ -19,4 +19,3 @@ jobs:
           echo "Received workflow_dispatch event with version ${{ github.ref_name }}"
           echo "Releasing version ${{ github.ref_name }}"
           gh release create -R merschformann/flow-experiment-api ${{ github.ref_name }} -t ${{ github.ref_name }} -n ${{ github.ref_name }}
-          gh release create -R merschformann/flow-experiment-api "other/tag/${{ github.ref_name }}" --target ${{ github.ref_name }} -t ${{ github.ref_name }} -n ${{ github.ref_name }}
