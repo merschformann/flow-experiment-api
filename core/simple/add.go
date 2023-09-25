@@ -8,8 +8,3 @@ func SimpleAdd(a, b int) int {
 	plugin.Connect(con, &simpleAdd)
 	return simpleAdd(a, b)
 }
-
-var (
-	con       = plugin.NewConnection()
-	simpleAdd func(a, b int) int
-)
